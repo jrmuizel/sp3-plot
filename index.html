@@ -35,12 +35,13 @@
         const layout = {
             title: `${headers[i]}`,
             xaxis: {
-            title: 'Build',
+            title: 'build id',
             autotypenumbers: 'strict'
             },
             yaxis: {
             title: headers[i]
-            }
+            },
+            dragmode: false
         };
         const plotData = [trace];
         const config = { responsive: true };
