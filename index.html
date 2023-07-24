@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Speedometer3 Progress</title>
+  <!-- Include Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>body { font-family: "Open Sans", verdana, arial, sans-serif } </style>
+</head>
+<body>
+    <h2>Speedometer3 score backfill for Firefox Nightly</h2>
+  <div id="plots"></div>
+
+  <script>
+    async function buildPlots() {
+        const csvData = await fetch("raw.csv").then(response => response.text())
+
+        // Parse CSV data into arrays
+        const rows = csvData.trim().split("\n");
+        const headers = rows[0].split(",");
+        const data = rows.slice(1).map(row => row.split(",").map(parseFloat));
+
+        // Create a plot for each column
+        const plotsDiv = document.getElementById('plots');
+        for (let i = 1; i < headers.length; i++) {
+        const plotDiv = document.createElement("div");
+        plotsDiv.appendChild(plotDiv)
+        const columnData = data.map(row => row[i]);
+        const trace = {
+            x: data.map(row => (row[0].toString())),
+            y: columnData,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: headers[i]
+        };
+        const layout = {
+            title: `${headers[i]}`,
+            xaxis: {
+            title: 'Build',
+            autotypenumbers: 'strict'
+            },
+            yaxis: {
+            title: headers[i]
+            }
+        };
+        const plotData = [trace];
+        const config = { responsive: true };
+        Plotly.newPlot(plotDiv, plotData, layout, config);
+        }
+    }
+    buildPlots()
+  </script>
+</body>
+</html>
